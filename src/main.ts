@@ -9,7 +9,6 @@ import { CachingInterceptor } from './interceptors/caching.interceptor';
 import { MetricsService } from './common/metrics/metrics.service';
 import { PrivateAppModule } from './private.app.module';
 import { PublicAppModule } from './public.app.module';
-import { TransactionProcessorModule } from './crons/transaction.processor.module';
 import * as bodyParser from 'body-parser';
 import { CachingService } from './common/caching/caching.service';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
@@ -73,11 +72,6 @@ async function bootstrap() {
     await cacheWarmerApp.listen(apiConfigService.getCacheWarmerFeaturePort());
   }
 
-  if (apiConfigService.getIsTransactionProcessorFeatureActive()) {
-    const transactionProcessorApp = await NestFactory.create(TransactionProcessorModule);
-    await transactionProcessorApp.listen(apiConfigService.getTransactionProcessorFeaturePort());
-  }
-
   if (apiConfigService.getIsQueueWorkerFeatureActive()) {
     const queueWorkerApp = await NestFactory.create(QueueWorkerModule);
     await queueWorkerApp.listen(8000);
@@ -86,7 +80,6 @@ async function bootstrap() {
   const logger = new Logger("Bootstrapper");
   logger.log(`Public API active: ${apiConfigService.getIsPrivateApiFeatureActive()}`);
   logger.log(`Private API active: ${apiConfigService.getIsPrivateApiFeatureActive()}`);
-  logger.log(`Transaction processor active: ${apiConfigService.getIsTransactionProcessorFeatureActive()}`);
   logger.log(`Cache warmer active: ${apiConfigService.getIsCacheWarmerFeatureActive()}`);
   logger.log(`Queue worker active: ${apiConfigService.getIsQueueWorkerFeatureActive()}`);
 

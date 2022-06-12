@@ -11,21 +11,21 @@ services:
     environment:
       - REDIS_REPLICATION_MODE=master
 
-  database:
-    image: "mysql:latest"
+  # database:
+  #   image: "mysql:latest"
 
-    ports:
-      - "3306:3306"
+  #   ports:
+  #     - "3306:3306"
 
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=example
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=root
+  #     - MYSQL_DATABASE=example
 
   mongodb:
     image: mongo:latest
 
     environment:
-      - MONGODB_DATABASE="example"
+      - MONGODB_DATABASE="prof"
 
     ports:
       - 27017:27017

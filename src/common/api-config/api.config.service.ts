@@ -147,32 +147,6 @@ export class ApiConfigService {
     return featurePort;
   }
 
-  getIsTransactionProcessorFeatureActive(): boolean {
-    const isTransactionProcessorActive = this.configService.get<boolean>('features.transactionProcessor.enabled');
-    if (isTransactionProcessorActive === undefined) {
-      throw new Error('No transaction processor feature flag present');
-    }
-
-    return isTransactionProcessorActive;
-  }
-
-  getTransactionProcessorFeaturePort(): number {
-    const featurePort = this.configService.get<number>('features.transactionProcessor.port');
-    if (featurePort === undefined) {
-      throw new Error('No transaction processor port present');
-    }
-
-    return featurePort;
-  }
-
-  getTransactionProcessorMaxLookBehind(): number {
-    const maxLookBehind = this.configService.get<number>('features.transactionProcessor.maxLookBehind');
-    if (maxLookBehind === undefined) {
-      throw new Error('No transaction processor max look behind present');
-    }
-
-    return maxLookBehind;
-  }
 
   getIsQueueWorkerFeatureActive(): boolean {
     const isQueueWorkerActive = this.configService.get<boolean>('features.queueWorker.enabled');

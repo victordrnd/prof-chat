@@ -1,3 +1,3 @@
-## Welcome the the Elrond Microservice API!
+## Welcome the the ClassMath API!
 
-Here you can set your custom documentation in markdown format
+<!-- Here you can set your custom documentation in markdown format -->

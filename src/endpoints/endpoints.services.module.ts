@@ -1,18 +1,21 @@
 import { Module } from "@nestjs/common";
-import { ExampleModule } from "./example/example.module";
 import { TestSocketModule } from "./test-sockets/test.socket.module";
 import { TokenModule } from "./tokens/token.module";
 import { UsersModule } from "./users/user.module";
+import { RoomModule } from './room/room.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
-    ExampleModule,
     TestSocketModule,
     UsersModule,
     TokenModule,
+    RoomModule,
+    MessageModule,
   ],
   exports: [
-    ExampleModule, TestSocketModule, UsersModule, TokenModule,
+    TestSocketModule, UsersModule, TokenModule,
   ],
+  providers: [],
 })
 export class EndpointsServicesModule { }
