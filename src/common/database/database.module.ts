@@ -15,7 +15,7 @@ import { ApiConfigService } from "../api-config/api.config.service";
         ...apiConfigService.getDatabaseConnection(),
         entities: [User,Room, Message],
         keepConnectionAlive: true,
-        synchronize: true,
+        synchronize: false,
       }),
       inject: [ApiConfigService],
     }),

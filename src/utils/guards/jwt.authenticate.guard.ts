@@ -1,5 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { verify } from 'jsonwebtoken';
+import { UsersService } from 'src/endpoints/users/user.service';
 import { ApiConfigService } from '../../common/api-config/api.config.service';
 
 @Injectable()
@@ -7,7 +8,8 @@ export class JwtAuthenticateGuard implements CanActivate {
   private readonly logger: Logger;
 
   constructor(
-    private readonly apiConfigService: ApiConfigService
+    private readonly apiConfigService: ApiConfigService,
+    private userService : UsersService
   ) {
     this.logger = new Logger(JwtAuthenticateGuard.name);
   }
@@ -28,35 +30,12 @@ export class JwtAuthenticateGuard implements CanActivate {
       const jwtSecret = this.apiConfigService.getJwtSecret();
 
       request.jwt = await new Promise((resolve, reject) => {
-        verify(jwt, jwtSecret, (err, decoded) => {
+        verify(jwt, jwtSecret, async (err, decoded) => {
           if (err) {
             reject(err);
           }
-
-          const userInfo = decoded?.user ?? {};
-
-          const cookies = request.cookies;
-          if (cookies) {
-            const impersonateAddress = cookies['Impersonate-Address'];
-            if (impersonateAddress) {
-              const admins = this.apiConfigService.getSecurityAdmins();
-              if (admins && admins.includes(userInfo.address)) {
-                userInfo.address = impersonateAddress;
-              }
-            }
-          }
-
-          const headers = request.headers;
-          if (headers) {
-            const impersonateAddress = headers['Impersonate-Address'];
-            if (impersonateAddress) {
-              const admins = this.apiConfigService.getSecurityAdmins();
-              if (admins && admins.includes(userInfo.address)) {
-                userInfo.address = impersonateAddress;
-              }
-            }
-          }
-
+          const user_id : number = parseInt(decoded?.sub || "");
+          const userInfo = await this.userService.findOne(user_id);
           resolve(userInfo);
         });
       });

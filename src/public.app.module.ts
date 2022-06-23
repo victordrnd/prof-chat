@@ -14,7 +14,7 @@ import { NoSQLDatabaseModule } from './common/database/nosql.module';
     LoggingModule,
     CommonModule,
     DatabaseModule,
-    NoSQLDatabaseModule,
+    // NoSQLDatabaseModule,
     EndpointsServicesModule,
     EndpointsControllersModule,
   ],

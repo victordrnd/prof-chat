@@ -16,7 +16,7 @@ export class User {
   @Column({ unique: true })
   email?: string;
 
-  @Column()
+  @Column({select : false})
   password?: string;
 
   @Column({ nullable: true })
@@ -28,10 +28,10 @@ export class User {
   @Column({ nullable: true })
   role_id?: number
 
-  @Column({ nullable: true })
+  @Column({ nullable: true,select : false })
   stripe_id?: string
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select : false })
   default_pm?: string
 
   @Column({ nullable: true })
@@ -52,8 +52,12 @@ export class User {
   @OneToMany(() => Message, (message: Message) => message.user)
   messages?: Message[];
 
-  @ManyToMany(() => Room)
-  @JoinTable()
+  @ManyToMany(type => Room, room => room.users)
+  @JoinTable({
+    name: "users_rooms_rooms",
+    joinColumn: { name: "usersId", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "roomsId" }
+  })
   rooms?: Room[];
 
 }

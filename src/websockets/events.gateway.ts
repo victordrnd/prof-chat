@@ -25,8 +25,9 @@ export class EventsGateway {
 
   @SubscribeMessage('new_message')
   handleEvent(@MessageBody() data: CreateMessageDto): CreateMessageDto {
-    this.messageService.create(data);
+    console.warn(data);
     return data;
+    // return await this.messageService.create(data);
   }
 
 

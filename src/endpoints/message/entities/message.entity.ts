@@ -17,6 +17,10 @@ export class Message {
     userId?: number;
 
 
+    @Column("int", { nullable: true })
+    roomId?: number;
+
+
     @ManyToOne(() => Room, (room: Room) => room.messages)
     room? : Room;
 
