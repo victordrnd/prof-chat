@@ -4,17 +4,17 @@ import { EventsGateway } from "./events.gateway";
 
 @Controller()
 export class PubSubController {
-  private readonly logger: Logger;
+  // private readonly logger: Logger;
 
-  constructor(
-    private readonly eventsGateway: EventsGateway,
-  ) {
-    this.logger = new Logger(PubSubController.name);
-  }
+  // constructor(
+  //   // private readonly eventsGateway: EventsGateway,
+  // ) {
+  //   this.logger = new Logger(PubSubController.name);
+  // }
 
-  @EventPattern('onTest')
-  async onTest(payload: unknown) {
-    this.logger.log(`Notifying onTest with payload '${JSON.stringify(payload)}'`);
-    this.eventsGateway.onTest(payload);
-  }
+  // @EventPattern('onTest')
+  // async onTest(payload: unknown) {
+  //   this.logger.log(`Notifying onTest with payload '${JSON.stringify(payload)}'`);
+  //   // this.eventsGateway.onTest(payload);
+  // }
 }

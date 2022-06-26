@@ -12,8 +12,8 @@ export class MessageService {
   private readonly messageRepository: Repository<Message>) {}
 
   
-  async create(createMessageDto: CreateMessageDto) {
-    return await this.messageRepository.save(createMessageDto);
+  async create(message: Message) {
+    return await this.messageRepository.save(message);
   }
 
   findAll() {

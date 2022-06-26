@@ -8,7 +8,11 @@ database:
   port: 3306
   username: 'victor'
   password: 'root'
-  name: 'prof2'
+  name: 'prof'
+s3:
+  secretKey: "h3TXaydoyfCyXZftypfQ2VUlOhrK0sRh"
+  accessKey : "Nd8b4qGBKoIuyLfZ"
+  endpoint: "http://192.168.0.146:9005"
 features:
   publicApi:
     enabled: true

@@ -4,7 +4,7 @@
     "port": 3306,
     "username": "victor",
     "password": "root",
-    "database": "prof2",
+    "database": "prof",
     "entities": ["*/**/*.entity.ts"],
     "migrationsTableName": "custom_migration_table",
     "migrations": ["migration/*.ts"],

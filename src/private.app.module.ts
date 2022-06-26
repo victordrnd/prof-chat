@@ -7,6 +7,7 @@ import { CacheController } from './common/caching/cache.controller';
 import { MicroserviceModule } from './common/microservice/microservice.module';
 import { TestSocketController } from './endpoints/test-sockets/test.socket.controller';
 import { TestSocketModule } from './endpoints/test-sockets/test.socket.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 
 @Module({
@@ -16,6 +17,7 @@ import { TestSocketModule } from './endpoints/test-sockets/test.socket.module';
     MetricsModule,
     MicroserviceModule,
     TestSocketModule,
+    
   ],
   controllers: [
     MetricsController,

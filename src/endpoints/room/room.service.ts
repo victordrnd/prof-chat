@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChatService } from 'src/websockets/chat.service';
 import { Repository } from 'typeorm';
 import { Message } from '../message/entities/message.entity';
-import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
 
@@ -12,25 +13,30 @@ export class RoomService {
   constructor(@InjectRepository(Room)
   private readonly roomRepository: Repository<Room>,
   @InjectRepository(Message)
-  private readonly messageRepository : Repository<Message>) {
+  private readonly messageRepository : Repository<Message>
+  ) {
 
   }
 
-  create(room: Room) {
-    return this.roomRepository.save(room);
+  async create(room: Room) {
+    const new_room =  await this.roomRepository.save(room);
+    console.log("room.created");
+    return new_room
   }
 
 
   getAllMessagesInRoom(room_id: number) {
-    return this.roomRepository.find({
-      relations: ['messages'],
-      loadEagerRelations: true,
-      where: {
-        id: room_id
-      }
-    });
+    return this.messageRepository.createQueryBuilder('messages')
+    .where('roomId = :room_id', {room_id : room_id})
+    .getMany();
+    // return this.roomRepository.find({
+    //   relations: ['messages'],
+    //   loadEagerRelations: true,
+    //   where: {
+    //     id: room_id
+    //   }
+    // });
   }
-
 
   findAll(user_id: number) {
     return this.roomRepository.createQueryBuilder('rooms')
@@ -43,9 +49,11 @@ export class RoomService {
   findOne(id: number) {
     return this.roomRepository.createQueryBuilder('rooms')
     .leftJoinAndSelect('rooms.users', 'AllOthersusers')
-    .leftJoinAndSelect('rooms.messages', 'messages')
+    // .leftJoinAndSelect('rooms.messages', 'messages')
     .where('rooms.id = :roomId', {roomId : id})
     .getOne();
+
+    
   }
 
   update(id: number, updateRoomDto: UpdateRoomDto) {

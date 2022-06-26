@@ -5,5 +5,8 @@ export class CreateRoomDto {
     name : string = ""
 
     @ApiProperty()
-    users : Array<number> = []
+    users : Array<number> = [];
+
+    @ApiProperty()
+    withAdmin : boolean = false;
 }

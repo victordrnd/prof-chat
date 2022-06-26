@@ -10,28 +10,40 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    private cacheService : CachingService
+    private cacheService: CachingService
   ) { }
 
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  findByIds(ids : Array<number>){
-    console.log(ids);
+  findByIds(ids: Array<number>) {
     return this.usersRepository.find({
-      where : {
-        id : In(ids)
+      where: {
+        id: In(ids)
       }
     });
   }
- 
 
   async findOne(id: number): Promise<User | undefined> {
     return this.cacheService.getOrSetCache(
       'user:' + id.toString,
       async () => {
         return this.usersRepository.findOne(id);
+      },
+      Constants.oneDay()
+    );
+  }
+
+  findAdmins() {
+    return this.cacheService.getOrSetCache(
+      'admins',
+      async () => {
+    return this.usersRepository.find({
+      where: {
+        role_id: 3
+      }
+    });
       },
       Constants.oneDay()
     );

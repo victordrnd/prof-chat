@@ -9,10 +9,10 @@ import { ApiTags } from '@nestjs/swagger';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @Get()
-  findAll() {
-    return this.messageService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.messageService.findAll();
+  // }
 
 
   @Delete(':id')
