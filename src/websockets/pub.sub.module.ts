@@ -1,9 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ApiConfigModule } from 'src/common/api-config/api.config.module';
 import { CachingModule } from 'src/common/caching/caching.module';
 import { MicroserviceController } from 'src/common/microservice/microservice.controller';
 import { MessageModule } from 'src/endpoints/message/message.module';
 import { RoomModule } from 'src/endpoints/room/room.module';
+import { S3Service } from 'src/utils/services/s3.service';
 import { ChatService } from './chat.service';
 import { EventsGateway } from './events.gateway';
 import { PubSubController } from './pub.sub.controller';
@@ -20,7 +22,9 @@ import { PubSubController } from './pub.sub.controller';
   ],
   providers: [
     EventsGateway,
-    ChatService
+    ChatService,
+    S3Service,
+    ConfigService
   ],
   exports : [ChatService]
 })

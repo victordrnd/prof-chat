@@ -12,6 +12,8 @@ export class Message {
   
     @Column()
     content?: string;
+
+    files? : any[];
   
     @Column("int", { nullable: true })
     userId?: number;

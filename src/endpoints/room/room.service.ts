@@ -44,6 +44,7 @@ export class RoomService {
       .leftJoinAndSelect('rooms.users', 'AllOthersusers')
       .where('user.id = :searchQuery', { searchQuery: user_id })
       .where('AllOthersusers.id = :id', { id: user_id })
+      .orderBy('rooms.updated_at', 'DESC')
       .getMany();
 
     return await Promise.all(rooms.map(async (room) => {
@@ -71,7 +72,7 @@ export class RoomService {
   getLastMessage(room_id: number) {
     return this.messageRepository.createQueryBuilder('messages')
       .where('roomId = :room_id', { room_id })
-      .orderBy('created_at', 'ASC')
+      .orderBy('created_at', 'DESC')
       .getOne();
   }
   update(id: number, updateRoomDto: UpdateRoomDto) {

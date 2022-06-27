@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { S3Service } from 'src/utils/services/s3.service';
 import { Repository } from 'typeorm';
+import { Room } from '../room/entities/room.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
@@ -9,11 +11,27 @@ import { Message } from './entities/message.entity';
 export class MessageService {
 
   constructor(@InjectRepository(Message)
-  private readonly messageRepository: Repository<Message>) {}
+  private readonly messageRepository: Repository<Message>,
+  @InjectRepository(Room)
+  private readonly roomRepository : Repository<Room>,
+  private readonly s3Service : S3Service) {}
 
   
   async create(message: Message) {
+    this.roomRepository.update(
+      {id : message.roomId},
+      {updated_at : new Date()}
+    );
     return await this.messageRepository.save(message);
+  }
+
+
+
+  uploadFiles(files : File[]){
+    return files.map(file => {
+      console.log("Updloading", file.name);
+      return this.s3Service.uploadFile(file);
+    });
   }
 
   findAll() {

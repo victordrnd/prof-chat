@@ -1,6 +1,6 @@
 import { Message } from "../../../endpoints/message/entities/message.entity";
 import { User } from "../../../endpoints/users/entities/user.entity";
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('rooms')
 export class Room {
@@ -23,4 +23,10 @@ export class Room {
 
     @OneToOne(type => Message, (message: Message) => message.room)
     last_message? : Message
+
+    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+    public created_at?: Date;
+
+    @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+    public updated_at?: Date;
 }
