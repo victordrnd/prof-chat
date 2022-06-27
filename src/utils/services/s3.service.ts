@@ -10,17 +10,22 @@ export class S3Service{
         this.s3Client = new S3({
             accessKeyId: this.configService.get('s3.accessKey'),
             secretAccessKey: this.configService.get('s3.secretKey'),
-            endpoint : this.configService.get('s3.endpoint')
+            endpoint : this.configService.get('s3.endpoint'),
+            s3ForcePathStyle: true,
+            signatureVersion: 'v4'
         });
         console.log(this.configService.get('s3.accessKey'));
     }
 
 
     getObjectUrl(path : string){
-        return this.s3Client.getSignedUrlPromise('getObject', {
-            Bucket : "test",
-            Key : path,
-            Expires : 3600
-        });
+        if(path){
+            return this.s3Client.getSignedUrl('getObject', {
+                Bucket : "avatars",
+                Key : path,
+                Expires : 3600
+            });
+        }
+        return undefined;
     }
 }

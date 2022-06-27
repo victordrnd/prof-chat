@@ -18,15 +18,14 @@ export class EventsGateway implements OnGatewayConnection {
   handleConnection(client: Socket, ...args: any[]) { }
 
   @WebSocketServer()
-  webSocketServer: Server | undefined;
+  webSocketServer!: Server | undefined;
 
 
   @SubscribeMessage('register')
   async handleRegisterEvent(@ConnectedSocket() client: Socket, @MessageBody() userInfo: any) {
-    client.join('user-' + userInfo.userId);
     const user_rooms: Room[] = await this.roomService.findAll(userInfo.userId);
     user_rooms.forEach(room => {
-      client.join('room-' + room.id);
+      client.join(room.id?.toString()!);
     });
     return "ok";
   }
@@ -34,13 +33,13 @@ export class EventsGateway implements OnGatewayConnection {
 
   @SubscribeMessage('new_message')
   handleNewMessageEvent(@ConnectedSocket() socket: Socket, @MessageBody() message: Message) {
-    socket.to('room-' + message.roomId).emit('new_message', message)
-    socket.emit('new_message', message);
+    this.webSocketServer!.in(message.roomId?.toString()!).emit('new_message', message);
     this.messageService.create(message)
   }
 
-  @SubscribeMessage('new_room')
+  // @SubscribeMessage('new_room')
   handleNewRoomEvent(room: Room) {
+    console.log('new room create : ', room);
     // this.webSocketServer.
   }
 

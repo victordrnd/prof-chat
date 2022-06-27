@@ -27,7 +27,7 @@ export class UsersService {
 
   async findOne(id: number): Promise<User | undefined> {
     return this.cacheService.getOrSetCache(
-      'user:' + id.toString,
+      'user:' + id.toString(),
       async () => {
         return this.usersRepository.findOne(id);
       },
@@ -39,11 +39,11 @@ export class UsersService {
     return this.cacheService.getOrSetCache(
       'admins',
       async () => {
-    return this.usersRepository.find({
-      where: {
-        role_id: 3
-      }
-    });
+        return this.usersRepository.find({
+          where: {
+            role_id: 3
+          }
+        });
       },
       Constants.oneDay()
     );

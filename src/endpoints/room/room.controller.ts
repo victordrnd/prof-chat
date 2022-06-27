@@ -31,7 +31,6 @@ export class RoomController {
     }
     room.users.push(user);
     const createdRoom = await this.roomService.create(room);
-    delete createdRoom.users;
     return createdRoom;
   }
 

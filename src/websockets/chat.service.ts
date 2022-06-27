@@ -10,6 +10,5 @@ export class ChatService {
 
     @OnEvent('room_created')
     handleRoomCreatedEvent(payload: Room) {
-        console.log(payload);
     }
 }
