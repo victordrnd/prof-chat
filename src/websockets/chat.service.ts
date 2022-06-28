@@ -5,10 +5,6 @@ import { EventsGateway } from "./events.gateway";
 
 @Injectable()
 export class ChatService {
-    constructor(private readonly eventsGateway : EventsGateway){}
 
 
-    @OnEvent('room_created')
-    handleRoomCreatedEvent(payload: Room) {
-    }
 }

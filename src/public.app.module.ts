@@ -7,7 +7,7 @@ import { LoggingModule } from './common/logging/logging.module';
 import { EndpointsServicesModule } from './endpoints/endpoints.services.module';
 import { EndpointsControllersModule } from './endpoints/endpoints.controller';
 import { DatabaseModule } from './common/database/database.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MicroserviceModule } from './common/microservice/microservice.module';
 import { PubSubModule } from './websockets/pub.sub.module';
 @Module({
   imports: [
@@ -17,8 +17,7 @@ import { PubSubModule } from './websockets/pub.sub.module';
     // NoSQLDatabaseModule,
     EndpointsServicesModule,
     EndpointsControllersModule,
-    // EventEmitterModule.forRoot(),
-    // PubSubModule
+    MicroserviceModule,
   ],
 })
 export class PublicAppModule { }

@@ -28,7 +28,6 @@ export class ApiConfigService {
     if (!redisUrl) {
       throw new Error('No redisUrl present');
     }
-
     return redisUrl;
   }
 

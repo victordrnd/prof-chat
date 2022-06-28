@@ -24,6 +24,8 @@ export class RoomController {
   async create(@Body() createRoomDto: CreateRoomDto, @Jwt() user: User) {
     const room = new Room();
     room.name = createRoomDto.name;
+
+    room.lessonId = createRoomDto.lessonId;
     room.users = await this.userService.findByIds(createRoomDto.users || []);
     if (createRoomDto.withAdmin) {
       const admins = await this.userService.findAdmins();

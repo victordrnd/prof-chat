@@ -25,15 +25,6 @@ export class MessageService {
     return await this.messageRepository.save(message);
   }
 
-
-
-  uploadFiles(files : File[]){
-    return files.map(file => {
-      console.log("Updloading", file.name);
-      return this.s3Service.uploadFile(file);
-    });
-  }
-
   findAll() {
     return `This action returns all message`;
   }

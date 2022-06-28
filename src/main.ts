@@ -98,7 +98,6 @@ async function bootstrap() {
     },
   );
   pubSubApp.useWebSocketAdapter(new SocketAdapter(pubSubApp));
-
   await pubSubApp.listen();
 }
 

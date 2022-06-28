@@ -10,6 +10,10 @@ export class Room {
     @Column()
     name?: string;
   
+    @Column({nullable : true})
+    lessonId?: number;
+
+
     @ManyToMany(type => User, user => user.rooms, {cascade : true})
     @JoinTable({
         name: "users_rooms_rooms",

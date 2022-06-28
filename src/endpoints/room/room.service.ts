@@ -1,7 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Server } from 'socket.io';
 import { S3Service } from 'src/utils/services/s3.service';
 import { ChatService } from 'src/websockets/chat.service';
 import { Repository } from 'typeorm';
@@ -17,7 +18,6 @@ export class RoomService {
   private readonly roomRepository: Repository<Room>,
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
-    @Inject('PUBSUB_SERVICE') private clientProxy: ClientProxy,
     private readonly s3Service: S3Service
   ) {
 
@@ -25,17 +25,23 @@ export class RoomService {
 
   async create(room: Room) {
     const new_room = await this.roomRepository.save(room);
-    this.clientProxy.emit('handleNewRoomEvent', new_room);
     return this.findOne(new_room.id!);
   }
 
 
-  getAllMessagesInRoom(room_id: number) {
-    return this.messageRepository.createQueryBuilder('messages')
+  async getAllMessagesInRoom(room_id: number) {
+    const messages = await this.messageRepository.createQueryBuilder('messages')
       .where('roomId = :room_id', { room_id: room_id })
       .orderBy('created_at', 'ASC')
       .limit(100)
       .getMany();
+
+    return await Promise.all(messages.map(async (message) => {
+      if (message.type != "text") {
+        message.content = this.s3Service.getObjectUrl(message.content!)
+      }
+      return message;
+    }));
   }
 
   async findAll(user_id: number) {
@@ -43,7 +49,6 @@ export class RoomService {
       .leftJoin('rooms.users', 'user')
       .leftJoinAndSelect('rooms.users', 'AllOthersusers')
       .where('user.id = :searchQuery', { searchQuery: user_id })
-      .where('AllOthersusers.id = :id', { id: user_id })
       .orderBy('rooms.updated_at', 'DESC')
       .getMany();
 
@@ -69,11 +74,17 @@ export class RoomService {
   }
 
 
-  getLastMessage(room_id: number) {
-    return this.messageRepository.createQueryBuilder('messages')
+  async getLastMessage(room_id: number) {
+    const message = await this.messageRepository.createQueryBuilder('messages')
       .where('roomId = :room_id', { room_id })
       .orderBy('created_at', 'DESC')
       .getOne();
+    if (message) {
+      if (message!.type != "text") {
+        message!.content = "New attachment file"
+      }
+    }
+    return message
   }
   update(id: number, updateRoomDto: UpdateRoomDto) {
     return `This action updates a #${id} room`;

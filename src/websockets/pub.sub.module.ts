@@ -22,10 +22,8 @@ import { PubSubController } from './pub.sub.controller';
   ],
   providers: [
     EventsGateway,
-    ChatService,
     S3Service,
     ConfigService
   ],
-  exports : [ChatService]
 })
 export class PubSubModule { }

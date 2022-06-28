@@ -14,7 +14,6 @@ export class S3Service {
             s3ForcePathStyle: true,
             signatureVersion: 'v4'
         });
-        console.log(this.configService.get('s3.accessKey'));
     }
 
 
@@ -30,13 +29,13 @@ export class S3Service {
     }
 
 
-    uploadFile(file: any) {
+    async uploadFile(file: any) {
         const name = "tchat/" + new Date().getTime() + "-" + file.name;
-        this.s3Client.putObject({
+        await this.s3Client.putObject({
             Bucket: 'avatars',
             Key: name,
             Body: file.data
-        }).promise().then(res => console.log(res));
+        }).promise();
         return name;
     }
 }

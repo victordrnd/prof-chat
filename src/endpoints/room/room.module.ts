@@ -13,32 +13,16 @@ import { ApiConfigService } from 'src/common/api-config/api.config.service';
 import { ClientOptions, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { S3Service } from 'src/utils/services/s3.service';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
+import { MicroserviceModule } from 'src/common/microservice/microservice.module';
 
 @Module({
   imports: [DatabaseModule, UsersModule, ApiConfigModule, ApiModule, MessageModule,
-
+    MicroserviceModule
   ],
   controllers: [RoomController],
-  providers: [RoomService,S3Service,ConfigService,
-    {
-      provide: 'PUBSUB_SERVICE',
-      useFactory: (apiConfigService: ApiConfigService) => {
-        const clientOptions: ClientOptions = {
-          transport: Transport.REDIS,
-          options: {
-            url: `redis://${apiConfigService.getRedisUrl()}:6379`,
-            retryDelay: 1000,
-            retryAttempts: 10,
-            retry_strategy: function () {
-              return 1000;
-            },
-          },
-        };
-
-        return ClientProxyFactory.create(clientOptions);
-      },
-      inject: [ApiConfigService]
-    }
+  providers: [
+    RoomService,S3Service,ConfigService
   ],
   exports: [RoomService]
 })

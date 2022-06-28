@@ -10,7 +10,7 @@ export class Message {
     @Column()
     type?: string;
   
-    @Column()
+    @Column("text")
     content?: string;
 
     files? : any[];

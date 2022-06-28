@@ -9,4 +9,7 @@ export class CreateRoomDto {
 
     @ApiProperty()
     withAdmin : boolean = false;
+
+    @ApiProperty()
+    lessonId? : number;
 }
