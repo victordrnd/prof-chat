@@ -55,7 +55,6 @@ export class EventsGateway implements OnGatewayConnection {
   }
   @SubscribeMessage('new_room')
   handleNewRoomEvent(@ConnectedSocket() socket: Socket, @MessageBody() room: Room){
-    console.log(room);
     room.users?.map(user => {
       this.webSocketServer?.to('user-'+user.id).emit('new_room', room);
     })
