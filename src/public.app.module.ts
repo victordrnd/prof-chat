@@ -9,6 +9,9 @@ import { EndpointsControllersModule } from './endpoints/endpoints.controller';
 import { DatabaseModule } from './common/database/database.module';
 import { MicroserviceModule } from './common/microservice/microservice.module';
 import { PubSubModule } from './websockets/pub.sub.module';
+import { JwtModule } from '@nestjs/jwt';
+import { ApiConfigService } from './common/api-config/api.config.service';
+import { ApiConfigModule } from './common/api-config/api.config.module';
 @Module({
   imports: [
     LoggingModule,
@@ -18,6 +21,8 @@ import { PubSubModule } from './websockets/pub.sub.module';
     EndpointsServicesModule,
     EndpointsControllersModule,
     MicroserviceModule,
+   
   ],
+  // providers : [ApiConfigService]
 })
 export class PublicAppModule { }

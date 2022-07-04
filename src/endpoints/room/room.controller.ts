@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, Param, Delete, UseGuards } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
@@ -21,7 +21,7 @@ export class RoomController {
 
   @Post()
   @ApiParam(CreateRoomDto)
-  async create(@Body() createRoomDto: CreateRoomDto, @Jwt() user: User) {
+  async create(@Body() createRoomDto: CreateRoomDto, @Request() req : any) {
     const room = new Room();
     room.name = createRoomDto.name;
 
@@ -31,7 +31,8 @@ export class RoomController {
       const admins = await this.userService.findAdmins();
       room.users = [...room.users, ...admins];
     }
-    room.users.push(user);
+    const current = await this.userService.findOne(req.user.id);
+    room.users.push(current!);
     const createdRoom = await this.roomService.create(room);
     return createdRoom;
   }
@@ -39,8 +40,8 @@ export class RoomController {
 
 
   @Get('/my')
-  async findAll(@Jwt() user: User) {
-    return await this.roomService.findAll(user.id!)
+  async findAll( @Request() req : any) {
+    return await this.roomService.findAll(req.user.id)
   }
 
   @Get(':id/messages')

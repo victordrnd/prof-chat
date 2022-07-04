@@ -31,6 +31,7 @@ export class S3Service {
 
     async uploadFile(file: any) {
         const name = "tchat/" + new Date().getTime() + "-" + file.name;
+        console.log(name)
         await this.s3Client.putObject({
             Bucket: 'avatars',
             Key: name,

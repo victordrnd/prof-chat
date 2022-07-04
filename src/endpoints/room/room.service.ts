@@ -30,11 +30,13 @@ export class RoomService {
 
 
   async getAllMessagesInRoom(room_id: number) {
-    const messages = await this.messageRepository.createQueryBuilder('messages')
+    let messages = await this.messageRepository.createQueryBuilder('messages')
       .where('roomId = :room_id', { room_id: room_id })
-      .orderBy('created_at', 'ASC')
+      .orderBy('created_at', 'DESC')
       .limit(100)
       .getMany();
+
+    messages = messages.sort((a, b) => a.id! - b.id!)
 
     return await Promise.all(messages.map(async (message) => {
       if (message.type != "text") {
@@ -53,6 +55,12 @@ export class RoomService {
       .getMany();
 
     return await Promise.all(rooms.map(async (room) => {
+      const teacher = room.users?.find(user=>user.role_id == 2);
+      if(teacher){
+        if(teacher.avatar){
+          room.image = this.s3Service.getObjectUrl(teacher.avatar);
+        }
+      }
       room.last_message = await this.getLastMessage(room.id!);
       return room;
     }));
@@ -64,11 +72,13 @@ export class RoomService {
       // .leftJoinAndSelect('rooms.messages', 'messages')
       .where('rooms.id = :roomId', { roomId: id })
       .getOne();
+    if (room!.users) {
 
-    room!.users = room!.users!.map((user: User) => {
-      user.avatar = this.s3Service.getObjectUrl(user.avatar!);
-      return user;
-    });
+      room!.users = room!.users!.map((user: User) => {
+        user.avatar = this.s3Service.getObjectUrl(user.avatar!);
+        return user;
+      });
+    }
     room!.last_message = await this.getLastMessage(id);
     return room;
   }

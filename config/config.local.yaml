@@ -1,7 +1,7 @@
 urls:
   api: 'https://devnet-api.elrond.com'
   swagger:
-    - 'http://192.168.0.146:3000'
+    - 'http://192.168.1.186:3000'
   redis: '127.0.0.1'
 database:
   host: 'localhost'
@@ -12,7 +12,7 @@ database:
 s3:
   secretKey: "h3TXaydoyfCyXZftypfQ2VUlOhrK0sRh"
   accessKey : "Nd8b4qGBKoIuyLfZ"
-  endpoint: "http://192.168.0.146:9005"
+  endpoint: "http://192.168.1.186:9005"
 features:
   publicApi:
     enabled: true

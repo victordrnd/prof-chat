@@ -27,7 +27,7 @@ export class User {
   @Column({ length: 1, nullable: true, select: false })
   sexe?: string
 
-  @Column({ nullable: true, select: false })
+  @Column({ nullable: true})
   role_id?: number
 
   @Column({ nullable: true, select: false })
