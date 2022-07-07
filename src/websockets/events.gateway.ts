@@ -9,6 +9,8 @@ import { Message } from "src/endpoints/message/entities/message.entity";
 import { RoomService } from "src/endpoints/room/room.service";
 import { S3Service } from "src/utils/services/s3.service";
 import { MessagePattern } from "@nestjs/microservices";
+import { NotificationService } from "src/utils/services/notification.service";
+import { UsersService } from "src/endpoints/users/user.service";
 
 @Injectable()
 @WebSocketGateway(3005, { transports: ['websocket'], cors: false })
@@ -18,6 +20,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   rooms: { room_id: string, users: userInfo[], messages? : ClassRoomMessage[] }[] = [];
   constructor(private readonly messageService: MessageService,
     private readonly roomService: RoomService,
+    private readonly notificationService : NotificationService,
+    private readonly userService : UsersService,
     private s3Service: S3Service) {
     this.logger = new Logger(EventsGateway.name);
   }
@@ -52,8 +56,12 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     const new_message = await this.messageService.create(message);
     delete new_message.files
+    const room = await this.roomService.findOne(message.roomId!);  
+    const sender = await this.userService.findOne(message.userId!);
     if (file) {
       new_message.content = this.s3Service.getObjectUrl(message.content!);
+    }else{
+      this.notificationService.sendToDevice(room?.users!.filter(user => user.id != message.userId) || [], `New message from ${sender?.firstname} ${sender?.lastname}`, message.type == "text" ? message.content! : "New file");
     }
     this.webSocketServer!.in(message.roomId?.toString()!).emit('new_message', new_message);
   }
@@ -61,7 +69,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleNewRoomEvent(@ConnectedSocket() socket: Socket, @MessageBody() room: Room) {
     room.users?.map(user => {
       this.webSocketServer?.in('user-'+user.id).socketsJoin(room.id!.toString());
-    }) 
+    }); 
     this.webSocketServer?.in(room.id!.toString()).emit('new_room', room);
   }
 

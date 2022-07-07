@@ -3,18 +3,23 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { config } from "rxjs";
 import { ApiConfigService } from "src/common/api-config/api.config.service";
+import { UsersService } from "src/endpoints/users/user.service";
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(@Inject() private configService: ApiConfigService) {
+    constructor(@Inject() private configService: ApiConfigService,
+    @Inject() private userService : UsersService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
             secretOrKey: configService.getJwtSecret()
         });
-        console.log(configService.getJwtSecret());
     }
 
     async validate(payload: any) {
-        return {id: payload.sub}
+        const user =  await this.userService.findOne(payload.sub);
+        console.log('Processing request for user '+ user!.id);
+        return user;
+        // console.log(new Date().getSeconds(), payload);
+        // return {id: payload.sub}
     }
 }

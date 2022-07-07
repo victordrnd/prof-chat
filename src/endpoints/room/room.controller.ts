@@ -12,7 +12,7 @@ import { ChatService } from 'src/websockets/chat.service';
 
 @Controller('rooms')
 @ApiTags('rooms')
-@UseGuards(JwtAuthenticateGuard)
+// @UseGuards(JwtAuthenticateGuard)
 export class RoomController {
   constructor(private readonly roomService: RoomService,
     private readonly userService: UsersService,
@@ -38,9 +38,10 @@ export class RoomController {
   }
 
 
-
+  @UseGuards(JwtAuthenticateGuard)
   @Get('/my')
   async findAll( @Request() req : any) {
+    console.log("getting room for", req.user);
     return await this.roomService.findAll(req.user.id)
   }
 

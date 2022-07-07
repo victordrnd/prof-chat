@@ -54,6 +54,7 @@
     "bull": "^4.2.0",
     "cache-manager": "^3.6.0",
     "cookie-parser": "^1.4.6",
+    "firebase-admin": "^11.0.0",
     "ioredis": "^4.28.3",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.7.3",

@@ -45,6 +45,10 @@ export class User {
   @Column({ default: false, select: false  })
   is_verified?: boolean
 
+  @Column({ nullable: true, select: false  })
+  fcm_token?: string
+
+
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" , select: false } )
   public created_at?: Date;
 

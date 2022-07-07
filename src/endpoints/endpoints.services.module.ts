@@ -8,6 +8,8 @@ import { JwtModule } from "@nestjs/jwt";
 import { ApiConfigService } from "src/common/api-config/api.config.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtStrategy } from "src/utils/guards/jwt.strategy";
+import { PassportModule } from "@nestjs/passport";
+import { UsersService } from "./users/user.service";
 
 @Module({
   imports: [
@@ -17,13 +19,19 @@ import { JwtStrategy } from "src/utils/guards/jwt.strategy";
     MessageModule,
     ConfigModule,
     ApiConfigModule,
+    PassportModule.register({      
+      defaultStrategy: 'jwt',      
+      property: 'user',      
+      session: false,    
+  }), 
     JwtModule.registerAsync({
       imports: [ApiConfigModule],
       inject: [ApiConfigService],
       useFactory(config: ApiConfigService) {
         return {
           secret: config.getJwtSecret(),
-          signOptions: { expiresIn: '60s' }
+          
+          // signOptions: { expiresIn: '60s' }
         }
       }
     })
@@ -34,10 +42,10 @@ import { JwtStrategy } from "src/utils/guards/jwt.strategy";
   providers: [ConfigService,
     {
       provide: 'JWT_STRATEGY',
-      useFactory: (apiConfigService: ApiConfigService) => {
-        return new JwtStrategy(apiConfigService);
+      useFactory: (apiConfigService: ApiConfigService, userService : UsersService) => {
+        return new JwtStrategy(apiConfigService, userService);
       },
-      inject: [ApiConfigService]
+      inject: [ApiConfigService, UsersService] 
     }
   ],
 })
