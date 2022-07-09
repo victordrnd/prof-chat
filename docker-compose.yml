@@ -1,32 +1,43 @@
 version: '3.4'
 services:
+  chat-masterclassroom:
+    image: "ghcr.io/victordrnd/chat-masterclassroom:latest"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3005:3005"
+    depends_on:
+      - redis
+    labels:
+        - traefik.enable=true
+        - "traefik.http.routers.dev-chat-api-service-https.rule=Host(`dev-api.master-classroom.com`)"
+        - traefik.http.routers.dev-chat-api-service-https.tls=true
+        - traefik.http.routers.dev-chat-api-service-https.tls.certresolver=lets-encrypt
+        - "traefik.http.routers.dev-chat-api-service-https.entrypoints=websecure"
+        - "traefik.http.routers.admin-router-http.service=dev-chat-api-service"
+        - "traefik.http.services.dev-chat-api-service.loadbalancer.server.port=3000"
+
+        - "traefik.http.routers.dev-chat-socket-service-https.rule=Host(`socket.master-classroom.com`)"
+        - traefik.http.routers.dev-chat-socket-service-https.tls=true
+        - traefik.http.routers.dev-chat-socket-service-https.tls.certresolver=lets-encrypt
+        - "traefik.http.routers.dev-chat-socket-service-https.entrypoints=websecure"
+        - "traefik.http.routers.admin-router-http.service=dev-chat-socket-service"
+        - "traefik.http.services.dev-chat-socket-service.loadbalancer.server.port=3005"
+
+
+        - "traefik.docker.network=web"
+    networks:
+      - web
+
   redis:
     image: "redis:alpine"
-
+    restart: unless-stopped
     command: redis-server
-
-    ports:
-      - "6379:6379"
-
     environment:
       - REDIS_REPLICATION_MODE=master
-
-  # database:
-  #   image: "mysql:latest"
-
-  #   ports:
-  #     - "3306:3306"
-
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=root
-  #     - MYSQL_DATABASE=example
-
-  mongodb:
-    image: mongo:latest
-
-    environment:
-      - MONGODB_DATABASE="prof"
-
-    ports:
-      - 27017:27017
-
+    networks:
+      - web
+networks:
+  web:
+    external:
+      name: web

@@ -12,7 +12,7 @@ import { ChatService } from 'src/websockets/chat.service';
 
 @Controller('rooms')
 @ApiTags('rooms')
-// @UseGuards(JwtAuthenticateGuard)
+@UseGuards(JwtAuthenticateGuard)
 export class RoomController {
   constructor(private readonly roomService: RoomService,
     private readonly userService: UsersService,
