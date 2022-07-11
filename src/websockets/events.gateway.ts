@@ -13,7 +13,7 @@ import { NotificationService } from "src/utils/services/notification.service";
 import { UsersService } from "src/endpoints/users/user.service";
 
 @Injectable()
-@WebSocketGateway(3005, { transports: ['websocket'], cors: false })
+@WebSocketGateway(3005, { transports: ['websocket'], cors: false, maxHttpBufferSize: 1e9, pingTimeout: 600000 })
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   logger;
 
@@ -117,7 +117,15 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
   @SubscribeMessage('classroom.new_message')
-  handleMessageChat(@ConnectedSocket() socket: Socket, @MessageBody() message: ClassRoomMessage) {
+  async handleMessageChat(@ConnectedSocket() socket: Socket, @MessageBody() message: ClassRoomMessage) {
+    let file;
+    if (message!.files!.length) {
+      file = await this.s3Service.uploadFile(message.files![0]);
+      message.type = message.files![0]!.type
+      message.content = file
+    }
+    if(file)
+      message.content = this.s3Service.getObjectUrl(message.content!)!;
     this.webSocketServer?.in('room' + message.room_id).emit('classroom.new_message', message);
   }
 
@@ -184,6 +192,8 @@ interface AnswerInfo {
 }
 
 interface ClassRoomMessage {
+  files? : any[];
+  type? : string;
   content: string;
   user_id: number;
   date: Date;
