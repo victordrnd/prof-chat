@@ -24,6 +24,7 @@ jobs:
           password: ${{ secrets.REGISTRY_GITHUB_TOKEN }}
       - 
         name: Get secret from base64
+        uses: actions/checkout@master
         env:
           DEV_ENV: ${{ secrets.DEV_ENV }}
         run: |
