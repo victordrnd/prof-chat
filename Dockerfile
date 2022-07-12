@@ -4,19 +4,19 @@ COPY package.json ./
 RUN apk add build-base pkgconfig libusb-dev linux-headers eudev-dev
 RUN yarn install
 COPY . .
-ARG DEV_ENV=null
-RUN echo ${DEV_ENV} | base64 -d > config/config.yaml
-
-ARG FCM=null
-RUN echo ${FCM} | base64 -d > fcm.json
 RUN npm run build
 RUN rm -Rf node_modules
+ARG DEV_ENV=null
+RUN echo ${DEV_ENV} | base64 -d > dist/config/config.yaml
+ARG FCM=null
+RUN echo ${FCM} | base64 -d > dist/fcm.json
 RUN yarn install --prod
 
 
 FROM gcr.io/distroless/nodejs:16 as masterclassroom-chat-api
 WORKDIR /usr/share/app
 COPY --from=development /usr/src/app/dist/ dist/
+COPY --from=development /usr/src/app/dist/config.yaml dist/config/config.yaml
 COPY --from=development /usr/src/app/node_modules/ node_modules/
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
