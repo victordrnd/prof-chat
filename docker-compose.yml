@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   chat-masterclassroom:
-    image: "ghcr.io/victordrnd/chat-masterclassroom:latest"
+    image: ghcr.io/victordrnd/chat-masterclassroom
     restart: unless-stopped
     ports:
       - "127.0.0.1:3000:3000"
@@ -38,21 +38,21 @@ services:
       - web
 
 
-   mysql:
-    image: 'mariadb:10.3'
-    container_name: mysql
-    restart: always
-    environment:
-       MYSQL_USER: prof
-       MYSQL_PASSWORD: prof69260
-       MYSQL_DATABASE: prof
-       MYSQL_ROOT_PASSWORD: prof69260
-    ports:
-        - '127.0.0.1:3306:3306'
-    volumes:
-        - ./mysql_prof/:/var/lib/mysql/
-    networks:
-      - web
+  # mysql:
+  #   image: 'mariadb:10.3'
+  #   container_name: mysql
+  #   restart: always
+  #   environment:
+  #      MYSQL_USER: prof
+  #      MYSQL_PASSWORD: prof69260
+  #      MYSQL_DATABASE: prof
+  #      MYSQL_ROOT_PASSWORD: prof69260
+  #   ports:
+  #       - '127.0.0.1:3306:3306'
+  #   volumes:
+  #       - ./mysql_prof/:/var/lib/mysql/
+  #   networks:
+  #     - web
 
 
 networks:
