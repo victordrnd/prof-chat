@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Message } from "src/endpoints/message/entities/message.entity";
 import { Room } from "src/endpoints/room/entities/room.entity";
@@ -11,12 +12,13 @@ import { ApiConfigService } from "../api-config/api.config.service";
     TypeOrmModule.forRootAsync({
       imports: [ApiConfigModule],
       useFactory: (apiConfigService: ApiConfigService) => ({
-        name : "prof",
+        name : (Math.random() + 1).toString(36).substring(7),
         type: 'mysql',
         ...apiConfigService.getDatabaseConnection(),
         entities: [User, Room, Message],
         keepConnectionAlive: true,
         synchronize: false,
+        
       }),
       inject: [ApiConfigService],
     }),
