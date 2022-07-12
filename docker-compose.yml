@@ -7,7 +7,7 @@ services:
       - "127.0.0.1:3000:3000"
       - "127.0.0.1:3005:3005"
     depends_on:
-      - redis
+      - redis-prof
     labels:
         - traefik.enable=true
         - "traefik.http.routers.dev-chat-api-service-https.rule=Host(`dev-chat-api.master-classroom.com`)"
@@ -28,7 +28,7 @@ services:
     networks:
       - web
 
-  redis:
+  redis-prof:
     image: "redis:alpine"
     restart: unless-stopped
     command: redis-server
