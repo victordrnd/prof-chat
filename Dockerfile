@@ -4,6 +4,8 @@ COPY package.json ./
 RUN apk add build-base pkgconfig libusb-dev linux-headers eudev-dev
 RUN yarn install
 COPY . .
+ARG DEV_ENV=null
+RUN base64 -d ${DEV_ENV} > config/config.yaml
 RUN npm run build
 RUN rm -Rf node_modules
 RUN yarn install --prod

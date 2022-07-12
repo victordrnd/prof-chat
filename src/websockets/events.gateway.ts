@@ -61,7 +61,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (file) {
       new_message.content = this.s3Service.getObjectUrl(message.content!);
     }
-    this.notificationService.sendToDevice(room?.users!.filter(user => user.id != message.userId) || [], `New message from ${sender?.firstname} ${sender?.lastname}`, message.type == "text" ? message.content! : "New file", {room : message.roomId?.toString()!});
+    this.notificationService.sendToDevice(room?.users!.filter(user => user.id != message.userId) || [], `New message from ${sender?.firstname} ${sender?.lastname}`, message.type == "text" ? message.content! : "New file", {room : message.roomId?.toString()!, code : "tchat.new_message"});
     
     this.webSocketServer!.in(message.roomId?.toString()!).emit('new_message', new_message);
   }

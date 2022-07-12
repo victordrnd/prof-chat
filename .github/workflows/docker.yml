@@ -22,18 +22,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.REGISTRY_GITHUB_TOKEN }}
-      - uses: actions/checkout@master
-      - 
-        name: Get secret from base64
-        env:
-          DEV_ENV: ${{ secrets.DEV_ENV }}
-          WORKSPACE : ${{ github.workspace }}
-        run: |
-          echo import certificate from secrets and regenerate the file
-          echo $DEV_ENV | base64 -d > $WORKSPACE/config/config.yaml
       -
         name: Build and push
         uses: docker/build-push-action@v2
+        env:
+          DEV_ENV : ${{ secrets.SECRET_IP }}
         with:
           push: true
           tags: ghcr.io/victordrnd/chat-masterclassroom:latest
+          build-args: |
+            DEV_ENV=${{ secrets.DEV_ENV }}
