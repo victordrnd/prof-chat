@@ -18,7 +18,7 @@ FROM gcr.io/distroless/nodejs:16 as masterclassroom-chat-api
 WORKDIR /usr/share/app
 COPY --from=development /usr/src/app/dist/ dist/
 COPY --from=development /usr/src/app/config.yaml dist/config/config.yaml
-COPY --from=development /usr/src/app/fcm.json dist/fcm.json
+COPY --from=development /usr/src/app/fcm.json fcm.json
 COPY --from=development /usr/src/app/node_modules/ node_modules/
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
