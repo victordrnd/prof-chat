@@ -22,8 +22,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.REGISTRY_GITHUB_TOKEN }}
+      - uses: actions/checkout@master
       - 
         name: Get secret from base64
+        uses: actions/checkout@v2
         env:
           DEV_ENV: ${{ secrets.DEV_ENV }}
           WORKSPACE : ${{ github.workspace }}
