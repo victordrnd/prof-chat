@@ -5,6 +5,7 @@ RUN apk add build-base pkgconfig libusb-dev linux-headers eudev-dev
 RUN yarn install
 COPY . .
 ARG DEV_ENV=null
+RUN mkdir config
 RUN echo ${DEV_ENV} | base64 -d config/config.yaml
 RUN npm run build
 RUN rm -Rf node_modules
