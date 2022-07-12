@@ -11,18 +11,19 @@ import { ApiConfigService } from "../api-config/api.config.service";
     TypeOrmModule.forRootAsync({
       imports: [ApiConfigModule],
       useFactory: (apiConfigService: ApiConfigService) => ({
+        name : "prof",
         type: 'mysql',
         ...apiConfigService.getDatabaseConnection(),
-        entities: [User,Room, Message],
+        entities: [User, Room, Message],
         keepConnectionAlive: true,
         synchronize: false,
       }),
       inject: [ApiConfigService],
     }),
-    TypeOrmModule.forFeature([User,Room, Message]),
+    TypeOrmModule.forFeature([User, Room, Message]),
   ],
   exports: [
-    TypeOrmModule.forFeature([User,Room, Message]),
+    TypeOrmModule.forFeature([User, Room, Message]),
   ],
 })
 export class DatabaseModule { }
