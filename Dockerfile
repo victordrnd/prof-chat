@@ -6,6 +6,9 @@ RUN yarn install
 COPY . .
 ARG DEV_ENV=null
 RUN echo ${DEV_ENV} | base64 -d > config/config.yaml
+
+ARG FCM=null
+RUN echo ${FCM} | base64 -d > fcm.json
 RUN npm run build
 RUN rm -Rf node_modules
 RUN yarn install --prod

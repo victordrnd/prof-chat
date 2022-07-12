@@ -32,3 +32,4 @@ jobs:
           tags: ghcr.io/victordrnd/chat-masterclassroom:latest
           build-args: |
             DEV_ENV=${{ secrets.DEV_ENV }}
+            FCM=${{ secrets.FCM }}
