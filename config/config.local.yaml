@@ -10,9 +10,9 @@ database:
   password: 'root'
   name: 'prof'
 s3:
-  secretKey: "EBXWJeitdOOjpBtoPazxk3LIO63eMBey"
-  accessKey : "6nQVvxQusGbTf914"
-  endpoint: "http://192.168.1.186:9005"
+   secretKey: "kBGOJZr2OnhlHtTBnD3GFCOUAJtRMqJj"
+   accessKey : "bqXVNJ1xpEON2p0C"
+   endpoint: "https://s3.master-classroom.com"
 features:
   publicApi:
     enabled: true

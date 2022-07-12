@@ -10,7 +10,7 @@ services:
       - redis
     labels:
         - traefik.enable=true
-        - "traefik.http.routers.dev-chat-api-service-https.rule=Host(`dev-api.master-classroom.com`)"
+        - "traefik.http.routers.dev-chat-api-service-https.rule=Host(`dev-chat-api.master-classroom.com`)"
         - traefik.http.routers.dev-chat-api-service-https.tls=true
         - traefik.http.routers.dev-chat-api-service-https.tls.certresolver=lets-encrypt
         - "traefik.http.routers.dev-chat-api-service-https.entrypoints=websecure"
@@ -24,7 +24,6 @@ services:
         - "traefik.http.routers.admin-router-http.service=dev-chat-socket-service"
         - "traefik.http.services.dev-chat-socket-service.loadbalancer.server.port=3005"
 
-
         - "traefik.docker.network=web"
     networks:
       - web
@@ -37,6 +36,25 @@ services:
       - REDIS_REPLICATION_MODE=master
     networks:
       - web
+
+
+   mysql:
+    image: 'mariadb:10.3'
+    container_name: mysql
+    restart: always
+    environment:
+       MYSQL_USER: prof
+       MYSQL_PASSWORD: prof69260
+       MYSQL_DATABASE: prof
+       MYSQL_ROOT_PASSWORD: prof69260
+    ports:
+        - '127.0.0.1:3306:3306'
+    volumes:
+        - ./mysql_prof/:/var/lib/mysql/
+    networks:
+      - web
+
+
 networks:
   web:
     external:

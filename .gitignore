@@ -38,3 +38,5 @@ lerna-debug.log*
 config/config.yaml
 config/config.custom.yaml
 fcm*.json
+config/config.prod.yaml
+prod
