@@ -45,7 +45,7 @@ export class User {
   @Column({ default: false, select: false  })
   is_verified?: boolean
 
-  @Column({ nullable: true, select: false  })
+  @Column({ nullable: true, select: true  })
   fcm_token?: string
 
 

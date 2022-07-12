@@ -60,9 +60,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const sender = await this.userService.findOne(message.userId!);
     if (file) {
       new_message.content = this.s3Service.getObjectUrl(message.content!);
-    }else{
-      this.notificationService.sendToDevice(room?.users!.filter(user => user.id != message.userId) || [], `New message from ${sender?.firstname} ${sender?.lastname}`, message.type == "text" ? message.content! : "New file");
     }
+    this.notificationService.sendToDevice(room?.users!.filter(user => user.id != message.userId) || [], `New message from ${sender?.firstname} ${sender?.lastname}`, message.type == "text" ? message.content! : "New file");
+    
     this.webSocketServer!.in(message.roomId?.toString()!).emit('new_message', new_message);
   }
   @SubscribeMessage('new_room')

@@ -27,9 +27,10 @@ jobs:
         uses: actions/checkout@master
         env:
           DEV_ENV: ${{ secrets.DEV_ENV }}
+          WORKSPACE : ${{ github.workspace }}
         run: |
           echo import certificate from secrets and regenerate the file
-          echo $DEV_ENV | base64 -d > ./config/config.yaml
+          echo $DEV_ENV | base64 -d > $WORKSPACE/config/config.yaml
       -
         name: Build and push
         uses: docker/build-push-action@v2

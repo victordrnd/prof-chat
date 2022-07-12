@@ -7,6 +7,7 @@ const fs = require('fs');
 export class NotificationService {
     constructor() {
         const firebaseCredentials = JSON.parse(fs.readFileSync("./fcm.json"));
+        console.log(firebaseCredentials);
         firebase.initializeApp({
             credential: firebase.credential.cert(firebaseCredentials),
         });
@@ -15,7 +16,9 @@ export class NotificationService {
 
     sendToDevice(users: User[], title: string, message: string) {
         const tokens: string[] = users.map(user => user.fcm_token).filter(e => e) as string[];
+        console.log(tokens);
         if (tokens.length) {
+            console.log('sending to ',tokens);
             firebase.messaging().sendToDevice(tokens, {
                 notification: {
                     body: message,
