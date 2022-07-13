@@ -7,7 +7,7 @@ import { UsersService } from "src/endpoints/users/user.service";
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(@Inject() private configService: ApiConfigService,
-    @Inject() private userService : UsersService) {
+        @Inject() private userService: UsersService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
@@ -16,10 +16,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        const user =  await this.userService.findOne(payload.sub);
-        console.log('Processing request for user '+ user!.id);
-        return user;
-        // console.log(new Date().getSeconds(), payload);
-        // return {id: payload.sub}
+        const user = await this.userService.findOne(payload.sub);
+        if (user) {
+            console.log('Processing request for user ' + user!.id);
+            return user;
+        }
+        return false;
     }
 }
