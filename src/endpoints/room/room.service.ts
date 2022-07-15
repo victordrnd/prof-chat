@@ -2,6 +2,7 @@ import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
+import { cp } from 'fs';
 import { Server } from 'socket.io';
 import { S3Service } from 'src/utils/services/s3.service';
 import { ChatService } from 'src/websockets/chat.service';
@@ -40,7 +41,7 @@ export class RoomService {
 
     return await Promise.all(messages.map(async (message) => {
       if (message.type != "text") {
-        message.content = this.s3Service.getObjectUrl(message.content!)
+        message.content = await this.s3Service.getObjectUrl(message.content!)
       }
       return message;
     }));
@@ -58,7 +59,7 @@ export class RoomService {
       const teacher = room.users?.find(user=>user.role_id == 2);
       if(teacher){
         if(teacher.avatar){
-          room.image = this.s3Service.getObjectUrl(teacher.avatar);
+          room.image = await this.s3Service.getObjectUrl(teacher.avatar);
         }
       }
       room.last_message = await this.getLastMessage(room.id!);
@@ -73,11 +74,10 @@ export class RoomService {
       .where('rooms.id = :roomId', { roomId: id })
       .getOne();
     if (room!.users) {
-
-      room!.users = room!.users!.map((user: User) => {
-        user.avatar = this.s3Service.getObjectUrl(user.avatar!);
+      room!.users =  await Promise.all(room!.users.map(async (user) => {
+        user.avatar = await this.s3Service.getObjectUrl(user.avatar!);
         return user;
-      });
+      }));
     }
     room!.last_message = await this.getLastMessage(id);
     return room;

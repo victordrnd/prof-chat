@@ -5,7 +5,8 @@ import { CachingService } from "src/common/caching/caching.service";
 @Injectable()
 export class S3Service {
     private s3Client;
-    public constructor(private configService: ConfigService) {
+    public constructor(private configService: ConfigService,
+        private cacheService : CachingService) {
 
         this.s3Client = new S3({
             accessKeyId: this.configService.get('s3.accessKey'),
@@ -19,11 +20,13 @@ export class S3Service {
 
     getObjectUrl(path: string) {
         if (path) {
-            return this.s3Client.getSignedUrl('getObject', {
-                Bucket: "avatars",
-                Key: path,
-                Expires: 3600
-            });
+            return this.cacheService.getOrSetCache(`s3:${path}`, async () => {
+                return await this.s3Client.getSignedUrl('getObject', {
+                    Bucket: "avatars",
+                    Key: path,
+                    Expires: 60 * 60 * 24 * 5
+                });
+            }, 60*60*24*4);
         }
         return undefined;
     }

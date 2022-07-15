@@ -59,7 +59,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = await this.roomService.findOne(message.roomId!);  
     const sender = await this.userService.findOne(message.userId!);
     if (file) {
-      new_message.content = this.s3Service.getObjectUrl(message.content!);
+      new_message.content = await this.s3Service.getObjectUrl(message.content!);
     }
     this.notificationService.sendToDevice(room?.users!.filter(user => user.id != message.userId) || [], `${sender?.firstname} ${sender?.lastname}`, message.type == "text" ? message.content! : "New file", {room : message.roomId?.toString()!, code : "tchat.new_message"});
     
@@ -125,7 +125,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       message.content = file
     }
     if(file)
-      message.content = this.s3Service.getObjectUrl(message.content!)!;
+      message.content = await this.s3Service.getObjectUrl(message.content!)!;
     this.webSocketServer?.in('room' + message.room_id).emit('classroom.new_message', message);
   }
 

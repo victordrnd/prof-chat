@@ -15,10 +15,12 @@ import { S3Service } from 'src/utils/services/s3.service';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
 import { MicroserviceModule } from 'src/common/microservice/microservice.module';
+import { CachingService } from 'src/common/caching/caching.service';
+import { CachingModule } from 'src/common/caching/caching.module';
 
 @Module({
   imports: [DatabaseModule, UsersModule, ApiConfigModule, ApiModule, MessageModule,
-    MicroserviceModule
+    MicroserviceModule, CachingModule
   ],
   controllers: [RoomController],
   providers: [
