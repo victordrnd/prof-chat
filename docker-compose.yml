@@ -11,16 +11,16 @@ services:
     labels:
         - traefik.enable=true
         - "traefik.http.routers.dev-chat-api-service-https.rule=Host(`api-tchat-dev.master-classroom.com`)"
-        #- traefik.http.routers.dev-chat-api-service-https.tls=false
-        #- traefik.http.routers.dev-chat-api-service-https.tls.certresolver=lets-encrypt
-        - "traefik.http.routers.dev-chat-api-service-https.entrypoints=web"
+        - traefik.http.routers.dev-chat-api-service-https.tls=false
+        - traefik.http.routers.dev-chat-api-service-https.tls.certresolver=lets-encrypt
+        - "traefik.http.routers.dev-chat-api-service-https.entrypoints=websecure"
         - "traefik.http.routers.dev-chat-api-service-https.service=dev-chat-api-service"
         - "traefik.http.services.dev-chat-api-service.loadbalancer.server.port=3000"
 
         - "traefik.http.routers.dev-chat-socket-service-https.rule=Host(`socket.master-classroom.com`)"
-        #- traefik.http.routers.dev-chat-socket-service-https.tls=true
-        #- traefik.http.routers.dev-chat-socket-service-https.tls.certresolver=lets-encrypt
-        - "traefik.http.routers.dev-chat-socket-service-https.entrypoints=web"
+        - traefik.http.routers.dev-chat-socket-service-https.tls=true
+        - traefik.http.routers.dev-chat-socket-service-https.tls.certresolver=lets-encrypt
+        - "traefik.http.routers.dev-chat-socket-service-https.entrypoints=websecure"
         - "traefik.http.routers.dev-chat-socket-service-https.service=dev-chat-socket-service"
         - "traefik.http.services.dev-chat-socket-service.loadbalancer.server.port=3005"
 

@@ -24,9 +24,9 @@ export class S3Service {
                 return await this.s3Client.getSignedUrl('getObject', {
                     Bucket: "avatars",
                     Key: path,
-                    Expires: 60 * 60 * 24 * 5
+                    Expires: 60 * 60
                 });
-            }, 60*60*24*4);
+            }, 60*30);
         }
         return undefined;
     }
