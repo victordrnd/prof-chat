@@ -68,6 +68,15 @@ export class ApiConfigService {
     return databasePassword;
   }
 
+  getMapsJWT(): string {
+    const maps_jwt = this.configService.get<string>('maps.jwt');
+    if (!maps_jwt) {
+      throw new Error('No maps.jwt present');
+    }
+
+    return maps_jwt;
+  }
+
   getDatabaseName(): string {
     const databaseName = this.configService.get<string>('database.name');
     if (!databaseName) {

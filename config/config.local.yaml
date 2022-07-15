@@ -31,6 +31,8 @@ features:
 security:
   jwtSecret: 'pIG7fgPNTaI9wENv6Lhd1JeEyejvxOtAzPX8aOCq9GBd8RVlsWsxGZPTZlDrY94q'
   admins:
+maps:
+  jwt : 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJtYXBzYXBpIiwidGlkIjoiN1A4UFAyOTNaUSIsImFwcGlkIjoiN1A4UFAyOTNaUS5tYXBzLm1hc3Rlci1jbGFzc3Jvb20uY29tIiwiaXRpIjpmYWxzZSwiaXJ0IjpmYWxzZSwiaWF0IjoxNjU3ODk4OTUyLCJleHAiOjE2NTc5MDA3NTJ9.uT7pTchQhZNfV0LjnhmsnJ24sZYAEV8g49luNmHpvSORuFyTIBhFl1j1FIGRJ40o9j0cDSNZipGriCa-lbMG2g'
 rateLimiterSecret:
 keepAliveTimeout:
   downstream: 61000

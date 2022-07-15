@@ -6,16 +6,9 @@ import { UsersModule } from '../users/user.module';
 import { ApiConfigModule } from 'src/common/api-config/api.config.module';
 import { ApiModule } from 'src/common/network/api.module';
 import { MessageModule } from '../message/message.module';
-import { EventsGateway } from 'src/websockets/events.gateway';
-import { ChatService } from 'src/websockets/chat.service';
-import { PubSubModule } from 'src/websockets/pub.sub.module';
-import { ApiConfigService } from 'src/common/api-config/api.config.service';
-import { ClientOptions, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { S3Service } from 'src/utils/services/s3.service';
 import { ConfigService } from '@nestjs/config';
-import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
 import { MicroserviceModule } from 'src/common/microservice/microservice.module';
-import { CachingService } from 'src/common/caching/caching.service';
 import { CachingModule } from 'src/common/caching/caching.module';
 
 @Module({

@@ -10,6 +10,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtStrategy } from "src/utils/guards/jwt.strategy";
 import { PassportModule } from "@nestjs/passport";
 import { UsersService } from "./users/user.service";
+import { MapsModule } from './maps/maps.module';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { UsersService } from "./users/user.service";
           // signOptions: { expiresIn: '60s' }
         }
       }
-    })
+    }), MapsModule
   ],
   exports: [
     TestSocketModule, UsersModule,
