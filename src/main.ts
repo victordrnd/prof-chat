@@ -40,23 +40,23 @@ async function bootstrap() {
     new CachingInterceptor(cachingService, httpAdapterHostService, metricsService),
   );
 
-  const description = readFileSync(join(__dirname, '..', 'docs', 'swagger.md'), 'utf8');
+  //const description = readFileSync(join(__dirname, '..', 'docs', 'swagger.md'), 'utf8');
 
-  let documentBuilder = new DocumentBuilder()
-    .setTitle('Elrond Microservice API')
-    .setDescription(description)
-    .setVersion('1.0.0')
-    .setExternalDoc('Elrond Docs', 'https://docs.elrond.com');
+  // let documentBuilder = new DocumentBuilder()
+  //   .setTitle('Elrond Microservice API')
+  //   .setDescription(description)
+  //   .setVersion('1.0.0')
+  //   .setExternalDoc('Elrond Docs', 'https://docs.elrond.com');
 
-  const apiUrls = apiConfigService.getSwaggerUrls();
-  for (const apiUrl of apiUrls) {
-    documentBuilder = documentBuilder.addServer(apiUrl);
-  }
+  // const apiUrls = apiConfigService.getSwaggerUrls();
+  // for (const apiUrl of apiUrls) {
+  //   documentBuilder = documentBuilder.addServer(apiUrl);
+  // }
 
-  const config = documentBuilder.build();
+  // const config = documentBuilder.build();
 
-  const document = SwaggerModule.createDocument(publicApp, config);
-  SwaggerModule.setup('', publicApp, document);
+  // const document = SwaggerModule.createDocument(publicApp, config);
+  // SwaggerModule.setup('', publicApp, document);
 
   if (apiConfigService.getIsPublicApiFeatureActive()) {
     await publicApp.listen(apiConfigService.getPublicApiFeaturePort());

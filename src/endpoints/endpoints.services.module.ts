@@ -19,23 +19,8 @@ import { MapsModule } from './maps/maps.module';
     RoomModule,
     MessageModule,
     ConfigModule,
-    ApiConfigModule,
-    PassportModule.register({      
-      defaultStrategy: 'jwt',      
-      property: 'user',      
-      session: false,    
-  }), 
-    JwtModule.registerAsync({
-      imports: [ApiConfigModule],
-      inject: [ApiConfigService],
-      useFactory(config: ApiConfigService) {
-        return {
-          secret: config.getJwtSecret(),
-          
-          // signOptions: { expiresIn: '60s' }
-        }
-      }
-    }), MapsModule
+    ApiConfigModule, 
+    MapsModule
   ],
   exports: [
     TestSocketModule, UsersModule,

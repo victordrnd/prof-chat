@@ -41,7 +41,6 @@ export class RoomController {
   @UseGuards(JwtAuthenticateGuard)
   @Get('/my')
   async findAll( @Request() req : any) {
-    console.log("getting room for", req.user);
     return await this.roomService.findAll(req.user.id)
   }
 

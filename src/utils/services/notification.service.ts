@@ -9,7 +9,6 @@ const fs = require('fs');
 export class NotificationService {
     constructor() {
         const firebaseCredentials = JSON.parse(fs.readFileSync(join(process.cwd(),"fcm.json")));
-        console.log(firebaseCredentials);
         firebase.initializeApp({
             credential: firebase.credential.cert(firebaseCredentials),
         });

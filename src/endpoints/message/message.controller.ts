@@ -33,8 +33,8 @@ export class MessageController {
   }
 
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.messageService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.messageService.remove(+id);
+  // }
 }

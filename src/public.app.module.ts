@@ -12,6 +12,7 @@ import { PubSubModule } from './websockets/pub.sub.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ApiConfigService } from './common/api-config/api.config.service';
 import { ApiConfigModule } from './common/api-config/api.config.module';
+import { PassportModule } from '@nestjs/passport';
 @Module({
   imports: [
     LoggingModule,
@@ -21,7 +22,20 @@ import { ApiConfigModule } from './common/api-config/api.config.module';
     EndpointsServicesModule,
     EndpointsControllersModule,
     MicroserviceModule,
-   
+    JwtModule.registerAsync({
+      imports: [ApiConfigModule],
+      inject: [ApiConfigService],
+      useFactory(config: ApiConfigService) {
+        return {
+          secret: config.getJwtSecret(),
+        }
+      }
+    }),
+    PassportModule.register({      
+      defaultStrategy: 'jwt',      
+      property: 'user',      
+      session: false,    
+  }), 
   ],
   // providers : [ApiConfigService]
 })

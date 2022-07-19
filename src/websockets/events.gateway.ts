@@ -1,20 +1,18 @@
-import { Injectable, Logger, OnApplicationBootstrap } from "@nestjs/common";
-import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
-import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { Injectable, Logger, UseGuards, Request, Inject } from "@nestjs/common";
+import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect,  SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket } from 'socket.io';
-import { CreateMessageDto } from "src/endpoints/message/dto/create-message.dto";
 import { MessageService } from "src/endpoints/message/message.service";
 import { Room } from "src/endpoints/room/entities/room.entity";
 import { Message } from "src/endpoints/message/entities/message.entity";
 import { RoomService } from "src/endpoints/room/room.service";
 import { S3Service } from "src/utils/services/s3.service";
-import { MessagePattern } from "@nestjs/microservices";
 import { NotificationService } from "src/utils/services/notification.service";
 import { UsersService } from "src/endpoints/users/user.service";
+import { WsGuard } from "src/utils/guards/ws.guard";
 
 @Injectable()
 @WebSocketGateway(3005, { transports: ['websocket'], cors: false, maxHttpBufferSize: 1e9, pingTimeout: 600000 })
-export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class EventsGateway implements OnGatewayConnection,OnGatewayDisconnect {
   logger;
 
   rooms: { room_id: string, users: userInfo[], messages? : ClassRoomMessage[] }[] = [];
@@ -27,6 +25,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
 
+
   handleConnection(client: Socket, ...args: any[]) { }
 
 
@@ -35,20 +34,22 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   webSocketServer!: Server | undefined;
 
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('register')
-  async handleRegisterEvent(@ConnectedSocket() client: Socket, @MessageBody() userInfo: any) {
-    const user_rooms: Room[] = await this.roomService.findAll(userInfo.userId);
-    client.join('user-' + userInfo.userId);
+  async handleRegisterEvent(@ConnectedSocket() client: Socket, @Request() req : any) {
+    const user_rooms: Room[] = await this.roomService.findAll(req.user);
+    client.join('user-' + req.user);
     user_rooms.forEach(room => {
       client.join(room.id?.toString()!);
     });
     return "ok";
   }
 
-
+  @UseGuards(WsGuard)
   @SubscribeMessage('new_message')
-  async handleNewMessageEvent(@ConnectedSocket() socket: Socket, @MessageBody() message: Message) {
+  async handleNewMessageEvent(@ConnectedSocket() socket: Socket, @MessageBody() message: Message, @Request() req : any) {
     let file;
+    message.userId = req.user
     if (message!.files!.length) {
       file = await this.s3Service.uploadFile(message.files![0]);
       message.type = message.files![0]!.type
@@ -65,6 +66,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     
     this.webSocketServer!.in(message.roomId?.toString()!).emit('new_message', new_message);
   }
+
+  @UseGuards(WsGuard)
   @SubscribeMessage('new_room')
   handleNewRoomEvent(@ConnectedSocket() socket: Socket, @MessageBody() room: Room) {
     room.users?.map(user => {
@@ -73,6 +76,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.webSocketServer?.in(room.id!.toString()).emit('new_room', room);
   }
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('classroom.join')
   handleJoinClassroomEvent(@ConnectedSocket() socket: Socket, @MessageBody() joinInfo: JoinRoom) {
     let room = this.rooms.find(room => room.room_id == 'room' + joinInfo.room_id);
@@ -93,22 +97,26 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     socket.join(room.room_id);
   }
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('classroom.answer')
   handleAnswer(@ConnectedSocket() socket: Socket, @MessageBody() answer: AnswerInfo) {
     this.webSocketServer!.to('room' + answer.room_id).emit('classroom.answer', answer);
   }
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('classroom.new-ice-candidate')
   handleNewICECandidate(@ConnectedSocket() socket: Socket, @MessageBody() candidat: NewIceCandidateInfo) {
     this.webSocketServer!.to('room' + candidat.room_id).emit('classroom.new-ice-candidate', candidat.candidat);
   }
 
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('classroom.negociating')
   handleNegociating(@ConnectedSocket() socket: Socket, @MessageBody() negociating: NegociatingInfo) {
     this.webSocketServer!.to('room' + negociating.room_id).emit('classroom.negociating', negociating);
   }
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('classroom.camera_toggle')
   handleCameraToggle(@ConnectedSocket() socket: Socket, @MessageBody() event: CameraToggleEvent) {
     socket?.to('room' + event.room_id).emit('classroom.camera_toggle', event);
@@ -116,9 +124,11 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('classroom.new_message')
-  async handleMessageChat(@ConnectedSocket() socket: Socket, @MessageBody() message: ClassRoomMessage) {
+  async handleMessageChat(@ConnectedSocket() socket: Socket, @MessageBody() message: ClassRoomMessage,@Request() req : any) {
     let file;
+    message.user_id = req.user;
     if (message!.files!.length) {
       file = await this.s3Service.uploadFile(message.files![0]);
       message.type = message.files![0]!.type
@@ -129,6 +139,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.webSocketServer?.in('room' + message.room_id).emit('classroom.new_message', message);
   }
 
+  @UseGuards(WsGuard)
   @SubscribeMessage('classroom.disconnect')
   handleDisconnectEvent(@ConnectedSocket() socket: Socket) {
     const room = this.rooms.find(room => {
@@ -158,8 +169,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   cleanEmptyRooms() {
     this.rooms = this.rooms.filter(room => room.users.length != 0);
   }
-  
-
 }
 
 
