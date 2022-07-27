@@ -56,7 +56,7 @@ export class RoomService {
       .getMany();
 
     return await Promise.all(rooms.map(async (room) => {
-      const teacher = room.users?.find(user=>user.role_id == 2);
+      const teacher = room?.users?.find(user=>user.role_id == 2);
       if(teacher){
         if(teacher.avatar){
           room.image = await this.s3Service.getObjectUrl(teacher.avatar);
