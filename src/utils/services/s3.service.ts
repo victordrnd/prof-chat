@@ -38,7 +38,9 @@ export class S3Service {
             Bucket: 'avatars',
             Key: name,
             Body: file.data,
-            ...((file.base64 || false) && {ContentEncoding: 'base64'})
+            ContentType : file.type,
+            ACL: 'public-read',
+            ...((file.base64 || false) && {ContentEncoding: 'base64'}),
         }).promise();
         return name;
     }
