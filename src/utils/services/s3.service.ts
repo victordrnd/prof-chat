@@ -34,11 +34,11 @@ export class S3Service {
 
     async uploadFile(file: any) {
         const name = "tchat/" + new Date().getTime() + "-" + file.name;
-        console.log(name)
         await this.s3Client.putObject({
             Bucket: 'avatars',
             Key: name,
-            Body: file.data
+            Body: file.data,
+            ...((file.base64 || false) && {ContentEncoding: 'base64'})
         }).promise();
         return name;
     }
