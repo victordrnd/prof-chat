@@ -30,6 +30,9 @@ jobs:
         with:
           push: true
           tags: ghcr.io/victordrnd/chat-masterclassroom:latest
+          platforms: |-
+              linux/amd64
+              linux/arm64
           build-args: |
             "DEV_ENV=${{ secrets.DEV_ENV }}"
             "FCM=${{ secrets.FCM }}"
