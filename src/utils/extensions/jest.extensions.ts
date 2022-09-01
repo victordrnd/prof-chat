@@ -1,5 +1,8 @@
+/* eslint-disable */
 expect.extend({
-    toHaveStructure<T>(received: T, keys: string[]) {
+    // eslint-disable-next-line
+    toHaveStructure<T>(received: any, keys: string[]) {
+        // eslint-disable-next-line
         const objectSortedKeys = JSON.stringify(Object.keys(received).sort());
         const expectedKeys = JSON.stringify(keys.sort());
 
@@ -23,3 +26,4 @@ expect.extend({
 interface Matchers<R> {
     toHaveStructure<T>(received: T, keys: string[]): R;
 }
+/* eslint-enable */
